@@ -20,6 +20,7 @@ import shutil
 from victory import run_victory
 from bill import run_bill
 
+
 def user_input():
     '''
     ввод пользовательских данных
@@ -75,6 +76,10 @@ def list_files():
     return (list(i for i in os.listdir() if os.path.isfile(i)))
 
 
+def author_info():
+    return 'Ural Kamaletdinov при сотрудничестве с neural-university.ru'
+
+
 if __name__ == '__main__':
     while True:
         print("\n")
@@ -119,7 +124,7 @@ if __name__ == '__main__':
             print(os.environ)
         elif choice == '8':
             # вывод информации о создателе программы;
-            print('Урал Аданисович Камалетдинов')
+            print(author_info())
         elif choice == '9':
             # запуск игры викторина из предыдущего дз;
             print('Запускаем приложение Victory')

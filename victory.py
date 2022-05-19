@@ -90,6 +90,7 @@ days = {'01': 'первого',
 
 def check_for_correctness_input(answer, name):
     # проверяем правильность ввода
+    result = ''
     if len(answer) == 10:
         if '.' in answer:
             if answer.count('.') == 2:
@@ -98,15 +99,27 @@ def check_for_correctness_input(answer, name):
                     if datas[0].isdigit() and datas[1].isdigit() and datas[2].isdigit():
                         return True
                     else:
-                        print('    Введены не числа')
+                        result = '    Введены не числа'
                 else:
-                    print(f'    Неверная длина чисел даты рождения!')
+                    result = f'    Неверная длина чисел даты рождения!'
             else:
-                print(f'    В дате должно быть ровно две разделительные точки!')
+                result = f'    В дате должно быть ровно две разделительные точки!'
         else:
-            print(f'    Дата должна быть разделена точками!!!')
+            result = f'    Дата должна быть разделена точками!!!'
     else:
-        print(f'    Неверный формат даты рождения! {name} недовольна!!!')
+        result = f'    Неверный формат даты рождения! {name} недовольна!!!'
+    return result
+
+
+def date_to_str(date):
+    """
+    Функция приводит дату к текстовому виду
+    :param date: дата в формате dd.mm.yyyy
+    :return: дата в текстовом виде
+    """
+    day, month, year = date.split('.')
+    result = f'{days[day]} {months[month]} {year} года'
+    return result
 
 
 def run_victory():
@@ -144,6 +157,7 @@ def run_victory():
 
 
 if __name__ == '__main__':
+    print(check_for_correctness_input('27.06.1977', 'мой день рождения'))
     run_victory()
 # def start():
 
