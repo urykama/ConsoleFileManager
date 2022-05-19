@@ -35,15 +35,47 @@
 """
 
 
+class Wallet():
+    def __init__(self):
+        self.__balance = 0
+
+    def set(self, value):
+        if value >= 0:
+            self.__balance = value
+
+    def get(self):
+        return self.__balance
+
+    def purchase(self, price):
+        if self.__balance >= price:
+            self.__balance -= price
+
+    def refill(self, value):
+        '''
+        пополнение счета
+        :param value:
+        :return:
+        '''
+        if value > 0:
+            self.__balance += value
+
+
 def run_bill():
     """
     Функция запускает программу личный счет
     :return:
     """
+    wallet = Wallet()
+    print(wallet.get())
+    wallet.set(100)
+    print(wallet.get())
+    wallet.set(-25)
+    print(wallet.get())
+
     bill_sum = 0
     history = []
-
-    while True:
+    run = True
+    while run:
         print('1. пополнение счета')
         print('2. покупка')
         print('3. история покупок')
@@ -65,9 +97,10 @@ def run_bill():
         elif choice == '3':
             print(history)
         elif choice == '4':
-            break
+            run = False
         else:
             print('Неверный пункт меню')
+
 
 if __name__ == '__main__':
     run_bill()
