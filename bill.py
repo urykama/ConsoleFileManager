@@ -59,6 +59,28 @@ class Wallet():
         if value > 0:
             self.__balance += value
 
+    def safe_to_file(self):
+        try:
+            with open("balance.txt", "w") as file:
+                file.write(str(self.__balance))
+        except FileNotFoundError:
+            print("Невозможно открыть файл")
+        except TypeError:
+            print('TypeError: int() argument must be a string, a bytes-like object or a real number, not ')
+        finally:
+            print('print(file.closed) ', file.closed)
+
+    def read_from_file(self):
+        try:
+            with open("balance.txt", "r") as file:
+                self.__balance = int(file.readline())
+        except FileNotFoundError:
+            print("Невозможно открыть файл")
+        except ValueError:
+            self.__balance = 0
+        # finally:
+        #     print('print(file.closed) ', file.closed)
+
 
 def run_bill():
     """
@@ -66,37 +88,34 @@ def run_bill():
     :return:
     """
     wallet = Wallet()
-    print(wallet.get())
-    wallet.set(100)
-    print(wallet.get())
-    wallet.set(-25)
-    print(wallet.get())
+    wallet.read_from_file()
 
-    bill_sum = 0
     history = []
     run = True
     while run:
+        print()
         print('1. пополнение счета')
         print('2. покупка')
         print('3. история покупок')
         print('4. выход')
-        print(f'Ваш счет {bill_sum}')
+        print(f'Ваш счет {wallet.get()}')
 
-        choice = input('Выберите пункт меню')
+        choice = input('Выберите пункт меню: ')
         if choice == '1':
-            cost = int(input('Введите сумму'))
-            bill_sum += cost
+            cost = int(input('Введите сумму: '))
+            wallet.refill(cost)
         elif choice == '2':
-            cost = int(input('Введите сумму покупки'))
-            if cost > bill_sum:
+            cost = int(input('Введите сумму покупки: '))
+            if cost > wallet.get():
                 print('Недостаточно средств')
             else:
-                bill_sum -= cost
-                name = input('Введит название покупки')
+                wallet.purchase(cost)
+                name = input('Введит название покупки: ')
                 history.append((name, cost))
         elif choice == '3':
             print(history)
         elif choice == '4':
+            wallet.safe_to_file()
             run = False
         else:
             print('Неверный пункт меню')
