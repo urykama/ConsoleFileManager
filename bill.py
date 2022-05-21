@@ -46,9 +46,17 @@ class Wallet():
     def get(self):
         return self.__balance
 
-    def purchase(self, price):
+    def purchase(self, product, price):
         if self.__balance >= price:
             self.__balance -= price
+            try:
+                with open("purchase_history.txt", "a") as file:
+                    file.write(f"{product} : {price}\n")
+            except FileNotFoundError:
+                print("Невозможно открыть файл")
+            return f'Покупка {price} руб.'
+        else:
+            return 'Недостаточно средств'
 
     def refill(self, value):
         '''
@@ -67,8 +75,6 @@ class Wallet():
             print("Невозможно открыть файл")
         except TypeError:
             print('TypeError: int() argument must be a string, a bytes-like object or a real number, not ')
-        finally:
-            print('print(file.closed) ', file.closed)
 
     def read_from_file(self):
         try:
@@ -78,8 +84,16 @@ class Wallet():
             print("Невозможно открыть файл")
         except ValueError:
             self.__balance = 0
-        # finally:
-        #     print('print(file.closed) ', file.closed)
+
+    def history(self):
+        try:
+            with open("purchase_history.txt", "r") as file:
+                # return int(file.readline())
+                return file.readlines()
+        except FileNotFoundError:
+            print("Невозможно открыть файл")
+        except ValueError:
+            return 'Нет истории покупок'
 
 
 def run_bill():
@@ -105,15 +119,16 @@ def run_bill():
             cost = int(input('Введите сумму: '))
             wallet.refill(cost)
         elif choice == '2':
+            product = input('Введит название покупки: ')
             cost = int(input('Введите сумму покупки: '))
-            if cost > wallet.get():
-                print('Недостаточно средств')
-            else:
-                wallet.purchase(cost)
-                name = input('Введит название покупки: ')
-                history.append((name, cost))
+            print(wallet.purchase(product, cost))
+            # history.append((product, cost))
         elif choice == '3':
-            print(history)
+
+
+            history = (wallet.history())
+            for i in history:
+                print(i, end="")
         elif choice == '4':
             wallet.safe_to_file()
             run = False
