@@ -20,6 +20,7 @@ import shutil
 from victory import run_victory
 from bill import run_bill
 
+
 def user_input():
     '''
     ввод пользовательских данных
@@ -75,6 +76,10 @@ def list_files():
     return (list(i for i in os.listdir() if os.path.isfile(i)))
 
 
+def author_info():
+    return 'Ural Kamaletdinov при сотрудничестве с neural-university.ru'
+
+
 if __name__ == '__main__':
     while True:
         print("\n")
@@ -82,12 +87,13 @@ if __name__ == '__main__':
         print('2. удалить (файл/папку)')
         print('3. копировать (файл/папку)')
         print('4. просмотр содержимого рабочей директории')
-        print('5. посмотреть только папки')
-        print('6. посмотреть только файлы')
-        print('7. просмотр информации об операционной системе')
-        print('8. создатель программы')
-        print('9. играть в викторину')
-        print('0. мой банковский счет')
+        print('5. сохранить содержимое рабочей директории в файл')
+        print('6. посмотреть только папки')
+        print('7. посмотреть только файлы')
+        print('8. просмотр информации об операционной системе')
+        print('i. создатель программы')
+        print('g. играть в викторину')
+        print('b. мой банковский счет')
         print('c. смена рабочей директории (*необязательный пункт)')
         print('x. выход')
 
@@ -108,23 +114,35 @@ if __name__ == '__main__':
             # вывод всех объектов в рабочей папке;
             print(os.listdir())
         elif choice == '5':
+            # 6. Добавить пункт "сохранить содержимое рабочей директории в файл";
+            print(list_files())
+            print(list_directorys())
+            try:  # создать файл listdir.txt (если он есть то пересоздать)
+                # files: victory.py, bill.py, main.py
+                # dirs: modules, packages
+                with open("listdir.txt", "w") as file:
+                    file.write(f"files: {', '.join(list_files())}\n" +
+                               f"dirs: {', '.join(list_directorys())}")
+            except FileNotFoundError:
+                print("Невозможно открыть файл")
+        elif choice == '6':
             # посмотреть только папки
             print(list_directorys())
-        elif choice == '6':
+        elif choice == '7':
             # посмотреть только файлы
             print(list_files())
-        elif choice == '7':
+        elif choice == '8':
             # вывести информацию об операционной системе (можно использовать пример из 1-го урока);
             print(f'Имя текущей ОС: {os.name}')
             print(os.environ)
-        elif choice == '8':
+        elif choice == 'i':
             # вывод информации о создателе программы;
-            print('Урал Аданисович Камалетдинов')
-        elif choice == '9':
+            print(author_info())
+        elif choice == 'g':
             # запуск игры викторина из предыдущего дз;
             print('Запускаем приложение Victory')
             run_victory()
-        elif choice == '0':
+        elif choice == 'b':
             # запуск программы для работы с банковским счетом из предыдущего дз
             # (задание учебное, после выхода из программы управлением счетом
             # в главной программе сумму и историю покупок можно не запоминать);
