@@ -28,11 +28,10 @@
 
 4. выход
 выход из программы
-
 При выполнении задания можно пользоваться любыми средствами
-
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
+from decorator import add_separators
 
 
 class Wallet():
@@ -46,7 +45,15 @@ class Wallet():
     def get(self):
         return self.__balance
 
+    @add_separators
     def purchase(self, product, price):
+        '''
+        Вся работа с файлами идет через: обработку исключений.
+        Здесь замена if:else: на тернарный оператор не улучшит читаемость кода.
+        :param product:
+        :param price:
+        :return:
+        '''
         if self.__balance >= price:
             self.__balance -= price
             try:
@@ -54,9 +61,11 @@ class Wallet():
                     file.write(f"{product} : {price}\n")
             except FileNotFoundError:
                 print("Невозможно открыть файл")
-            return f'Покупка {price} руб.'
+                return
+            self.safe_to_file()  # здесь сохраним в файл изменение баланса
+            print(f'Покупка {product} : {price} руб.')
         else:
-            return 'Недостаточно средств'
+            print('Недостаточно средств')
 
     def refill(self, value):
         '''
@@ -85,15 +94,17 @@ class Wallet():
         except ValueError:
             self.__balance = 0
 
+    @add_separators
     def history(self):
         try:
             with open("purchase_history.txt", "r") as file:
-                # return int(file.readline())
-                return file.readlines()
+                for i in file.readlines():
+                    print(i, end="")
+                return  # file.readlines()
         except FileNotFoundError:
             print("Невозможно открыть файл")
         except ValueError:
-            return 'Нет истории покупок'
+            print('Нет истории покупок')
 
 
 def run_bill():
@@ -121,14 +132,16 @@ def run_bill():
         elif choice == '2':
             product = input('Введит название покупки: ')
             cost = int(input('Введите сумму покупки: '))
-            print(wallet.purchase(product, cost))
+            wallet.purchase(product, cost)
             # history.append((product, cost))
+
         elif choice == '3':
-
-
+            wallet.history()
+            '''
             history = (wallet.history())
             for i in history:
                 print(i, end="")
+            '''
         elif choice == '4':
             wallet.safe_to_file()
             run = False

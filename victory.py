@@ -157,7 +157,7 @@ def run_victory():
 
 
 if __name__ == '__main__':
-    print(check_for_correctness_input('27.06.1977', 'мой день рождения'))
+    # print(check_for_correctness_input('27.06.1977', 'мой день рождения'))
     run_victory()
 # def start():
 

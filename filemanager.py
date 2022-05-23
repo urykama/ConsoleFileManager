@@ -19,13 +19,9 @@ import os
 import shutil
 from victory import run_victory
 from bill import run_bill
-
+from decorator import add_separators
 
 def user_input():
-    '''
-    ввод пользовательских данных
-        можно вставить проверку правильности ввода:
-    '''
     text = input('Введите имя папки: ')
     return text
 
@@ -60,24 +56,49 @@ def remove_file_or_directory():
     if os.path.isdir(path):
         remove_directory(path)
 
-
+'''
 def copy_file_or_directory(name, new_name):
     if os.path.isdir(name):
         shutil.copytree(name, new_name)
     else:
         shutil.copyfile(name, new_name)
+'''
+
+def copy_file_or_directory(name, new_name):
+    '''
+    + тернарный оператор
+    + обработка исключений
+    :param name:
+    :param new_name:
+    :return:
+    '''
+    try:
+        shutil.copytree(name, new_name) if os.path.isdir(name) else shutil.copyfile(name, new_name)
+    except OSError:
+        print("Копирование не удалось")
+    else:
+        print("Копирование выполнено")
 
 
 def list_directorys():
+    '''
+    Здесь применен генератор для создания списка
+    :return:
+    '''
     return (list(i for i in os.listdir() if os.path.isdir(i)))
 
 
 def list_files():
+    '''
+    Здесь применен генератор для создания списка
+    :return:
+    '''
     return (list(i for i in os.listdir() if os.path.isfile(i)))
 
-
+@add_separators
 def author_info():
-    return 'Ural Kamaletdinov при сотрудничестве с neural-university.ru'
+    print('Ural Kamaletdinov при сотрудничестве с neural-university.ru')
+    # return 'Ural Kamaletdinov при сотрудничестве с neural-university.ru'
 
 
 if __name__ == '__main__':
@@ -137,7 +158,8 @@ if __name__ == '__main__':
             print(os.environ)
         elif choice == 'i':
             # вывод информации о создателе программы;
-            print(author_info())
+            author_info()
+            # print(author_info())
         elif choice == 'g':
             # запуск игры викторина из предыдущего дз;
             print('Запускаем приложение Victory')
