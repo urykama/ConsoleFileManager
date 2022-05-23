@@ -19,12 +19,9 @@ import os
 import shutil
 from victory import run_victory
 from bill import run_bill
+from decorator import add_separators
 
 def user_input():
-    '''
-    ввод пользовательских данных
-        можно вставить проверку правильности ввода:
-    '''
     text = input('Введите имя папки: ')
     return text
 
@@ -59,20 +56,49 @@ def remove_file_or_directory():
     if os.path.isdir(path):
         remove_directory(path)
 
-
+'''
 def copy_file_or_directory(name, new_name):
     if os.path.isdir(name):
         shutil.copytree(name, new_name)
     else:
         shutil.copyfile(name, new_name)
+'''
+
+def copy_file_or_directory(name, new_name):
+    '''
+    + тернарный оператор
+    + обработка исключений
+    :param name:
+    :param new_name:
+    :return:
+    '''
+    try:
+        shutil.copytree(name, new_name) if os.path.isdir(name) else shutil.copyfile(name, new_name)
+    except OSError:
+        print("Копирование не удалось")
+    else:
+        print("Копирование выполнено")
 
 
 def list_directorys():
+    '''
+    Здесь применен генератор для создания списка
+    :return:
+    '''
     return (list(i for i in os.listdir() if os.path.isdir(i)))
 
 
 def list_files():
+    '''
+    Здесь применен генератор для создания списка
+    :return:
+    '''
     return (list(i for i in os.listdir() if os.path.isfile(i)))
+
+@add_separators
+def author_info():
+    print('Ural Kamaletdinov при сотрудничестве с neural-university.ru')
+    # return 'Ural Kamaletdinov при сотрудничестве с neural-university.ru'
 
 
 if __name__ == '__main__':
@@ -82,12 +108,13 @@ if __name__ == '__main__':
         print('2. удалить (файл/папку)')
         print('3. копировать (файл/папку)')
         print('4. просмотр содержимого рабочей директории')
-        print('5. посмотреть только папки')
-        print('6. посмотреть только файлы')
-        print('7. просмотр информации об операционной системе')
-        print('8. создатель программы')
-        print('9. играть в викторину')
-        print('0. мой банковский счет')
+        print('5. сохранить содержимое рабочей директории в файл')
+        print('6. посмотреть только папки')
+        print('7. посмотреть только файлы')
+        print('8. просмотр информации об операционной системе')
+        print('i. создатель программы')
+        print('g. играть в викторину')
+        print('b. мой банковский счет')
         print('c. смена рабочей директории (*необязательный пункт)')
         print('x. выход')
 
@@ -108,23 +135,36 @@ if __name__ == '__main__':
             # вывод всех объектов в рабочей папке;
             print(os.listdir())
         elif choice == '5':
+            # 6. Добавить пункт "сохранить содержимое рабочей директории в файл";
+            print(list_files())
+            print(list_directorys())
+            try:  # создать файл listdir.txt (если он есть то пересоздать)
+                # files: victory.py, bill.py, main.py
+                # dirs: modules, packages
+                with open("listdir.txt", "w") as file:
+                    file.write(f"files: {', '.join(list_files())}\n" +
+                               f"dirs: {', '.join(list_directorys())}")
+            except FileNotFoundError:
+                print("Невозможно открыть файл")
+        elif choice == '6':
             # посмотреть только папки
             print(list_directorys())
-        elif choice == '6':
+        elif choice == '7':
             # посмотреть только файлы
             print(list_files())
-        elif choice == '7':
+        elif choice == '8':
             # вывести информацию об операционной системе (можно использовать пример из 1-го урока);
             print(f'Имя текущей ОС: {os.name}')
             print(os.environ)
-        elif choice == '8':
+        elif choice == 'i':
             # вывод информации о создателе программы;
-            print('Урал Аданисович Камалетдинов')
-        elif choice == '9':
+            author_info()
+            # print(author_info())
+        elif choice == 'g':
             # запуск игры викторина из предыдущего дз;
             print('Запускаем приложение Victory')
             run_victory()
-        elif choice == '0':
+        elif choice == 'b':
             # запуск программы для работы с банковским счетом из предыдущего дз
             # (задание учебное, после выхода из программы управлением счетом
             # в главной программе сумму и историю покупок можно не запоминать);
